@@ -1,13 +1,11 @@
-== WHAT IT IS ==
+Immanager is a plugin for Wolf-CMS that lets you create thumbnails of images
+and add tittles and  descriptions to them.
+
+Coppy into the /wolf/plugins folder in Wolf CMS.
 
 
-
-== HOW TO USE IT ==
-
+Not yet finished.
 
 
-== NOTES ==
-
-
-== LICENSE ==
+Licence: GPL
 
