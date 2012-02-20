@@ -1,0 +1,2 @@
+[29-Jan-2012 18:53:17] PHP Fatal error:  Method View::__toString() must not throw an exception in /var/www/www.tiltit.org/wolf/app/layouts/backend.php on line 165
+[29-Jan-2012 19:04:06] PHP Fatal error:  Method View::__toString() must not throw an exception in /var/www/www.tiltit.org/wolf/app/layouts/backend.php on line 165
