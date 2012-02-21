@@ -6,24 +6,9 @@
  *			This plugin makes it posible to give titles and descriptions to
  *			images in the backend of a WolfCMS powered website.
  *
- *			Copyright 2012 Oliver Dille
+ *			Author : Oliver Dille
+ *			Licence : GPL3
  *
- */
-			
- /*
- *      This program is free software; you can redistribute it and/or modify
- *      it under the terms of the GNU General Public License as published by
- *      the Free Software Foundation version 3 of the License.
- *      
- *      This program is distributed in the hope that it will be useful,
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *      GNU General Public License for more details.
- *      
- *      You should have received a copy of the GNU General Public License
- *      along with this program; if not, write to the Free Software
- *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- *      MA 02110-1301, USA.
  */
 
 /* Security measure */
@@ -36,10 +21,7 @@ if (!defined('IN_CMS')) { exit(); }
  * imageFilename : is the the imahe filename
  * imageTitle : The title given by the user to the image
  * imageDescription : The description given by the user to the image.
- * 
- * In the immanager extent record class there shoud be a method to find all
- * images with a given path, and a method to find a single image with a given
- * path AND the image filename.
+ * thumbnailPath	: The path to to thumbnail if it exists
  * 
  */
 $sql = "CREATE TABLE IF NOT EXISTS " . TABLE_PREFIX . "immanager(
@@ -48,7 +30,8 @@ $sql = "CREATE TABLE IF NOT EXISTS " . TABLE_PREFIX . "immanager(
 	imagePath varchar(255),
 	imageFilename varchar(255),
 	imageTitle varchar(255),
-	imageDescription varchar(1020))";
+	imageDescription varchar(1020),
+	thumbnailPath varchar(255))";
 
 $PDO = Record::getConnection();
 $PDO->exec($sql);
