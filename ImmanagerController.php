@@ -398,41 +398,13 @@ class ImmanagerController extends PluginController {
 		// Search the directory for image files.
 		$files = $this->folderImageList(CMS_ROOT . $directory);
 		
-		/*
-		 * The folowing sql querys are to be replaced with
-		 * with the immanager exyends record class.
-		 * 
-		 */
-				
-		// If images where found Search in database if there is any entry
-		// for them.
-		
 		if (is_array($files)) {
-
-			/*
-			try {
-				$pdo = Record::getConnection();
-					
-				foreach($files as $key => $val)
-				{
-					$filename = $directory . '/' . $val;
-						
-					$sql = "select * from " . TABLE_PREFIX . "immanager where imagePath='$filename'";
-					$queryResult = $pdo->query($sql);
-					$row = $queryResult->fetch(PDO::FETCH_ASSOC);
 			
-					$imageTitles[] =  $row['imageTitle'];
-					$imageDescriptions[] = $row['imageDescription'];
-				}
-			}
-			catch(PDOException $e) {
-				echo $e->getMessage();
-			}
-			*/
+			
 		} 
 		else {
 			// If there no images in the folder. 
-			$files='There are no supported images in this folder';
+			$files=false;
 		}
 				
 		// Set variables to be sent to the sidebar.
@@ -468,69 +440,34 @@ class ImmanagerController extends PluginController {
 			'imageFilename' => $_POST['imageFilename']
 		);
     
-		$images = immanager::findAllByFolder($imagePath);
-
-		if (is_array($images)) {
-			
-			trigger_error('Is an array :)' . var_dump($images));
-			
+		//$images = immanager::findAllByFolder($imagePath);
+		$image = immanager::findByPath($imagePath . '/' . $imageData['imageFilename']);
+		
+		var_dump($image);
+		
+		if ($image) {
+			$image->imageTitle = $imageData['imageTitle'];
+			$image->imageDescription = $imageData['imageDescription'];
+			$image->save();
+		} 
+		else {
+			$image = new immanager();
+			$image->imagePath = $imageData['imagePath'];
+			$image->imageFilename =$imageData['imageFilename'];
+			$image->imageTitle = $imageData['imageTitle'];
+			$image->imageDescription = $imageData['imageDescription'];
+			$image->save();
 		}
-		
-		var_dump($images);
-		//$image = new immanager();
-		//$image->imagePath = $imageData['imagePath'];
-		//$image->imageFilename =$imageData['imageFilename'];
-		//$image->imageTitle = $imageData['imageTitle'];
-		//$image->imageDescription = $imageData['imageDescription'];
-		//$image->save();
-		
-		
-		/*
-		 * The folowing sql querys are to be replaced with
-		 * with the immanager exyends record class.
-		 * 
-		 */
-		
-    	/*
-    	try {
-	    	$pdo = Record::getConnection();
-	    	
-	    	// Enter the title and description into the db.
-	    	
-	    	$sql = "select COUNT(*) from " . TABLE_PREFIX . "immanager where imagePath = '$imagePath'";
-	    	$STH = $pdo->query($sql);
-	    	// If entry allready exist UPDATE esle INSERT.
-	    	if ($STH->fetchColumn() > 0) {
-	    		$sql = "UPDATE " . TABLE_PREFIX . "immanager 
-	    			SET imageTitle= :imageTitle, 
-	    			imageDescription = :imageDescription 
-	    			WHERE imagePath = :imagePath";
-	    		$returnMsg = 'update';
-	    	} else {
-	    		$sql = "INSERT INTO " . TABLE_PREFIX . "immanager
-	    			(imagePath, imageTitle, imageDescription) 
-	    			values(:imagePath, :imageTitle, :imageDescription)";
-	    		$returnMsg = 'insert';
-	    	}
-	    	$STH = $pdo->prepare($sql);
-	    	$STH->execute($imageData);
-    	}
-			catch(PDOException $e) {
-				echo $e->getMessage();
-			}
-    	*/
-    	if ($settings['enableAjax']==1) {
-    		$return['error'] = false;
-				$return['msg'] = 'success' . $returnMsg;
-    		echo json_encode($return);
-    	} else {
-    		
-    		$imageFolder = str_replace( '/' . end(explode('/', $imagePath)), '', $imagePath);
-    		
-				
-				
-    	//	Flash::set('success', __('Image title and description updated.'));
-    	//	redirect(get_url('plugin/immanager/browse' . $imagePath ));
-    	}
+			
+    if ($settings['enableAjax']==1) {
+    	$return['error'] = false;
+			$return['msg'] = 'success' . $returnMsg;
+    	echo json_encode($return);
+    } else {
+
+			$imageFolder = str_replace( '/' . end(explode('/', $imagePath)), '', $imagePath);	
+			Flash::set('success', __('Image title and description updated.'));
+			redirect(get_url('plugin/immanager/browse' . $imagePath ));
+    }
 	}
 }
