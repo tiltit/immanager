@@ -468,13 +468,22 @@ class ImmanagerController extends PluginController {
 			'imageFilename' => $_POST['imageFilename']
 		);
     
+		$images = immanager::findAllByFolder($imagePath);
+
+		if (is_array($images)) {
+			
+			trigger_error('Is an array :)' . var_dump($images));
+			
+		}
 		
-		$image = new immanager();
-		$image->imagePath = $imageData['imagePath'];
-		$image->imageFilename =$imageData['imageFilename'];
-		$image->imageTitle = $imageData['imageTitle'];
-		$image->imageDescription = $imageData['imageDescription'];
-		$image->save();
+		var_dump($images);
+		//$image = new immanager();
+		//$image->imagePath = $imageData['imagePath'];
+		//$image->imageFilename =$imageData['imageFilename'];
+		//$image->imageTitle = $imageData['imageTitle'];
+		//$image->imageDescription = $imageData['imageDescription'];
+		//$image->save();
+		
 		
 		/*
 		 * The folowing sql querys are to be replaced with
@@ -518,8 +527,10 @@ class ImmanagerController extends PluginController {
     		
     		$imageFolder = str_replace( '/' . end(explode('/', $imagePath)), '', $imagePath);
     		
-    		Flash::set('success', __('Image title and description updated.'));
-    		redirect(get_url('plugin/immanager/index?dir=' . $imageFolder));
+				
+				
+    	//	Flash::set('success', __('Image title and description updated.'));
+    	//	redirect(get_url('plugin/immanager/browse' . $imagePath ));
     	}
 	}
 }

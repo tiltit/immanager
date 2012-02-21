@@ -35,6 +35,56 @@ class immanager extends Record {
 		public $imageFilename;
     public $imageTitle;
     public $imageDescription;
+		
+		
+		
+	public static function find($args = null) {
+				
+		// Collect attributes...
+		$where    = isset($args['where']) ? trim($args['where']) : '';
+		$order_by = isset($args['order']) ? trim($args['order']) : '';
+		$offset   = isset($args['offset']) ? (int) $args['offset'] : 0;
+		$limit    = isset($args['limit']) ? (int) $args['limit'] : 0;
 
-	
+		// Prepare query parts
+		$where_string = empty($where) ? '' : "WHERE $where";
+		$order_by_string = empty($order_by) ? '' : "ORDER BY $order_by";
+		$limit_string = $limit > 0 ? "LIMIT $limit" : '';
+		$offset_string = $offset > 0 ? "OFFSET $offset" : '';
+
+		$tablename = self::tableNameFromClassName('immanager');
+
+		// Prepare SQL
+		$sql = "SELECT	$tablename.id as id,
+										$tablename.imagePath as imagePath,
+										$tablename.imageFilename as imageFilename,
+										$tablename.imageTitle as imageTitle, 
+										$tablename.imageDescription as imageDescription 
+			FROM $tablename $where_string";
+		
+		trigger_error($sql);
+		$stmt = self::$__CONN__->prepare($sql);
+		$stmt->execute();
+
+		// Run!
+		if ($limit == 1) {
+			return $stmt->fetchObject('immanager');
+		}
+		else {
+			$objects = array();
+				while ($object = $stmt->fetchObject('immanager'))
+				$objects[] = $object;
+
+				return $objects;
+			}
+
+	} // find
+		
+
+	public static function findAllByFolder($folder) {
+		return self::find(array(
+			'where' => self::tableNameFromClassName('immanager') . '.imagePath = "' . $folder . '"'
+		));
+	}
+		
 }

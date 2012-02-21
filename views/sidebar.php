@@ -52,7 +52,6 @@ function printSubDirectory ($directory,$level,$url,$ignoreFolder){
 	// List indent
 	$margin = $level*16;
 	$level++;
-	trigger_error($ignoreFolder);
 	foreach($scanedDirectory as $key => $val) {
 		if ((is_dir(CMS_ROOT . $directory . $val)) && ( ('/' . $val) != $ignoreFolder)) {
 			echo '<li style="margin-left:' . $margin . 'px;">';
