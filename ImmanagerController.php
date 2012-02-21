@@ -1,13 +1,13 @@
 <?php
 
 // php debuging
-//ini_set('display_errors', 0); 
-//ini_set('log_errors', 1); 
-//ini_set('error_log', '/var/www/www.tiltit.org/php_errors.txt'); 
+ini_set('display_errors', 0); 
+ini_set('log_errors', 1); 
+ini_set('error_log', '/var/www/www.tiltit.org/php_errors.txt'); 
 //error_reporting(E_USER_NOTICE);
-//error_reporting(E_ERROR | E_USER_NOTICE);
+error_reporting(E_ERROR | E_USER_NOTICE);
 //error_reporting(E_ALL);
-//xdebug_disable();
+xdebug_disable();
 /*
  *			Image Comenter plugin for WolfCMS.
  *
@@ -408,6 +408,7 @@ class ImmanagerController extends PluginController {
 		// for them.
 		
 		if (is_array($files)) {
+
 			/*
 			try {
 				$pdo = Record::getConnection();
@@ -458,14 +459,23 @@ class ImmanagerController extends PluginController {
 	public function imageCommeterSaveComment(){
 		
 		$settings = Plugin::getAllSettings('immanager');
-	
+		
 		$imagePath = $_POST['imagePath'];
 		$imageData = array( 
 			'imagePath' => $imagePath,
 			'imageTitle' => $_POST['imageTitle'],
-			'imageDescription' => $_POST['imageDescription']
+			'imageDescription' => $_POST['imageDescription'],
+			'imageFilename' => $_POST['imageFilename']
 		);
     
+		
+		$image = new immanager();
+		$image->imagePath = $imageData['imagePath'];
+		$image->imageFilename =$imageData['imageFilename'];
+		$image->imageTitle = $imageData['imageTitle'];
+		$image->imageDescription = $imageData['imageDescription'];
+		$image->save();
+		
 		/*
 		 * The folowing sql querys are to be replaced with
 		 * with the immanager exyends record class.

@@ -43,7 +43,7 @@ Plugin::setInfos(array(
 ));
 
 // Add the extend record class to the plugin.
-AutoLoader::addFile('Comment', CORE_ROOT.'/plugins/immanager/immanager.php');
+AutoLoader::addFile('immanager', CORE_ROOT.'/plugins/immanager/immanager.php');
 
 // Add the controller for the plugin.
 Plugin::addController('immanager', __('immanager'), 'administrator', true);

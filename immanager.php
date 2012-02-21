@@ -1,5 +1,15 @@
 <?php
 
+// php debuging
+ini_set('display_errors', 0); 
+ini_set('log_errors', 1); 
+ini_set('error_log', '/var/www/www.tiltit.org/php_errors.txt'); 
+//error_reporting(E_USER_NOTICE);
+error_reporting(E_ERROR | E_USER_NOTICE);
+//error_reporting(E_ALL);
+xdebug_disable();
+
+
 defined('IN_CMS') || exit();
 
 /*
@@ -26,8 +36,5 @@ class immanager extends Record {
     public $imageTitle;
     public $imageDescription;
 
-		public static function findByPath($path) {
-			$imageDescription = self::findOneFrom('ImageDescription', "name LIKE '$path'");
-			
-		}
+	
 }

@@ -70,7 +70,8 @@ if(is_array($images)){
 				<?php 
 				// Hiden input to set the image path.
 				?> 
-				<input type="hidden" name="imagePath" value="<?php echo $directory . DS . $image ;?>" />
+				<input type="hidden" name="imagePath" value="<?php echo $directory;?>" />
+				<input type="hidden" name="imageFilename" value="<?php echo $image ;?>" />
 		</fieldset>
 	</form>		
 <?php
@@ -97,7 +98,8 @@ $(document).ready(function(){
 			data : {
 				imageTitle : formData[0]['value'],
 				imageDescription : formData[1]['value'],
-				imagePath : formData[2]['value']
+				imagePath : formData[2]['value'],
+				imageFilename : formData[3]['value']
 			},
 			success : function(data){
 				
