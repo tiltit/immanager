@@ -12,6 +12,8 @@
  */
 
 
+
+
 defined('IN_CMS') || exit();
 
 /*
@@ -37,6 +39,7 @@ class immanager extends Record {
 		public $imageFilename;
     public $imageTitle;
     public $imageDescription;
+		public $thumbnailPath;
 		
 		
 		
@@ -61,7 +64,8 @@ class immanager extends Record {
 										$tablename.imagePath as imagePath,
 										$tablename.imageFilename as imageFilename,
 										$tablename.imageTitle as imageTitle, 
-										$tablename.imageDescription as imageDescription 
+										$tablename.imageDescription as imageDescription ,
+										$tablename.thumbnailPath as thumbnailPath
 			FROM $tablename $where_string";
 		
 		$stmt = self::$__CONN__->prepare($sql);

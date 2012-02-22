@@ -1,4 +1,5 @@
 <?php
+
 /*
  *			immanager plugin for WolfCMS.
  *
@@ -24,7 +25,9 @@ if(is_array($images)){
 				<tr>
 					<td  class="label" style="border-top: 0;"><label for="imageTitle">Image title:</label></td>
 					<td class="field" style="border-top: 0;">
-						<input type="text" class="textinput" value="<?php echo $imageTitles[$key];?>"name="imageTitle" style="width: 100%;"/>
+						<input type="text" class="textinput" 
+							value="<?php if(isset($immanagers[$image])) echo $immanagers[$image]->imageTitle;?>"
+							name="imageTitle" style="width: 100%;"/>
 					</td>
 				</tr>
 				<tr>
@@ -36,7 +39,7 @@ if(is_array($images)){
 						src="<?php echo get_url('plugin/immanager/thumbnail?path=') . $directory . DS . $image ?>&rm=6&w=120&h=120&backgroundColor=FFF"/>
 				</td>
 					<td class="field">
-						<textarea name="imageDescription" rows="10" cols="40" style="width: 100%;"><?php echo $imageDescriptions[$key];?></textarea> 
+						<textarea name="imageDescription" rows="10" cols="40" style="width: 100%;"><?php if(isset($immanagers[$image])) echo $immanagers[$image]->imageDescription;?></textarea> 
 					</td>
 				</tr>
 				<tr>

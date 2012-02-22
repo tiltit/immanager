@@ -1,5 +1,4 @@
 <?php
-
 /*
  *			immanager plugin for WolfCMS.
  *
@@ -32,21 +31,3 @@ AutoLoader::addFile('immanager', CORE_ROOT.'/plugins/immanager/immanager.php');
 
 // Add the controller for the plugin.
 Plugin::addController('immanager', __('immanager'), 'administrator', true);
-/*
-function imageCommenter($imagePath, $titleOrDescription = 'title'){
-			$pdo = Record::getConnection();
-			$query = "select * from image_commenter where imagePath='$imagePath'";
-			$queryResult = $pdo->query($query);
-			$row = $queryResult->fetch(PDO::FETCH_ASSOC);
-			$imageTitle = $row['imageTitle'];
-			$imageDescription = $row['imageDescription'];
-			$pdo=null;
-			if ($titleOrDescription == 'description') {
-				return $imageDescription;
-			} else {
-				return $imageTitle;
-			}
-		}
-*/
-		
-		

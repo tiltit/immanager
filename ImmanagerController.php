@@ -1,5 +1,12 @@
 <?php
-
+// php debuging
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', '/var/www/www.tiltit.org/php_errors.txt');
+//error_reporting(E_USER_NOTICE);
+error_reporting(E_ERROR | E_USER_NOTICE);
+//error_reporting(E_ALL);
+xdebug_disable();
 /*
  *			immanager plugin for WolfCMS.
  *
@@ -198,7 +205,7 @@ class ImmanagerController extends PluginController {
 				}
 				break;
 		}
-		imagedestroy($srcImage);
+		imagedestroy($src_image);
 		return $im;
 	}
 	
@@ -285,7 +292,7 @@ class ImmanagerController extends PluginController {
 		// trigger_error('view_thumbnails 2');
 		foreach($imageList as $val) {
 			$links['currentThumbnails'][] = $directory . $settings['thumbnailFolder'] .'/' . $val;
-			//trigger_error( URL_PUBLIC . $directory. '/' . $val);
+			// trigger_error( URL_PUBLIC . $directory. '/' . $val);
 			$links['name'][]=$val;
 		}
 		
@@ -374,10 +381,12 @@ class ImmanagerController extends PluginController {
 
 		// Search the directory for image files.
 		$files = $this->folderImageList(CMS_ROOT . $directory);
-		
+		// Check If there are any images in the folder.
 		if (is_array($files)) {
-			
-			
+			// Create an array of immanagers indexed by the file path. 
+			foreach(immanager::findAllByFolder($directory) as $image){
+				$immanagers[$image->imageFilename] = $image;
+			}
 		} 
 		else {
 			// If there no images in the folder. 
@@ -394,8 +403,7 @@ class ImmanagerController extends PluginController {
 		$this->display('immanager/views/index', array(
 			'directory' => $directory, 
 			'images' => $files,
-			'imageTitles' => $imageTitles,
-			'imageDescriptions' => $imageDescriptions,
+			'immanagers' => $immanagers,
 			'ajaxEnabled' => $settings['enableAjax']
 		));
     	
@@ -420,8 +428,6 @@ class ImmanagerController extends PluginController {
 		//$images = immanager::findAllByFolder($imagePath);
 		$image = immanager::findByPath($imagePath . '/' . $imageData['imageFilename']);
 		
-		var_dump($image);
-		
 		if ($image) {
 			$image->imageTitle = $imageData['imageTitle'];
 			$image->imageDescription = $imageData['imageDescription'];
@@ -436,8 +442,10 @@ class ImmanagerController extends PluginController {
 			
 			// Check whether there is a thumbnail for this image.
 			// if there is enter it to the row.
-			if(file_exists(CMS_ROOT .$image->imagePath . DS . $settings['thumbnailFolder'] . DS . $image->imageFilename )) {
-				trigger_error('Thumbnail Found');
+			$thumbnailPath = $image->imagePath . DS . $settings['thumbnailFolder'] . DS . $image->imageFilename;
+			if(file_exists(CMS_ROOT . $thumbnailPath )) {
+				trigger_error('hi');
+				$image->thumbnailPath = $thumbnailPath;
 			}
 			
 			$image->save();
