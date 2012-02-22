@@ -1,12 +1,12 @@
 <?php
 // php debuging
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
-ini_set('error_log', '/var/www/www.tiltit.org/php_errors.txt');
+//ini_set('display_errors', 0);
+//ini_set('log_errors', 1);
+//ini_set('error_log', '/var/www/www.tiltit.org/php_errors.txt');
 //error_reporting(E_USER_NOTICE);
-error_reporting(E_ERROR | E_USER_NOTICE);
+//error_reporting(E_ERROR | E_USER_NOTICE);
 //error_reporting(E_ALL);
-xdebug_disable();
+//xdebug_disable();
 /*
  *			immanager plugin for WolfCMS.
  *
@@ -19,34 +19,6 @@ xdebug_disable();
  */
 
 class ImmanagerController extends PluginController {
-	
-	/*
-	 * Overdrive PluginController render, so we can use our views paths
-	 * Sugested by andrewmman on the wolfcms forum.
-	 * Not sure what to do with it yet. From what I understand,
-	 * When $this->display is caled in the pluginController the display function
-	 * checks whether is is backend or frontend, if frontend calls the render() function
-	 * else it calls itsef on the parent class Controller in Framework.php which then calls
-	 * its own render() method.  
-	 * http://php.net/manual/en/keyword.parent.php
-         * 
-         */
-	public function render($view, $vars=array()) {
-		if (defined('CMS_BACKEND')) {
-			if ($this->layout) {
-				$this->layout_vars['content_for_layout'] = new View('../../plugins/'.$view, $vars);
-				$this->layout_vars['test'] = array('ok' => 'ok');
-				return new View('../layouts/'.$this->layout, $this->layout_vars);
-      }
-			else {
-				echo 'false';
-				return new View('../../plugins/'.$view, $vars);
-			}
-		}
-		else {
-			return parent::render($view, $vars);
-		}
-	}
 	
 	private function is_image ($ext) {
 		$types = array('png','jpg','jpeg','gif');		
@@ -262,7 +234,6 @@ class ImmanagerController extends PluginController {
 		
 		// Get the image path
 		$imagePath = CMS_ROOT . $_GET['path'];
-		//trigger_error("Thumbnail is called" . $imagePath);
 		// Select resize method. 0=strech, 1=crop, 2=frame, 3=only width, 4=only height, 5=longest side, 6=shortest side;  
 		$resizeMethod = $_GET['rm'];
 		// Width and height of thumbnail.
@@ -286,13 +257,10 @@ class ImmanagerController extends PluginController {
     $params = func_get_args();
 		$directory = '/' . join('/', $params);
     $directory = ($directory == '/') ? $settings['ImageFolder'] : $directory;
-    // trigger_error('view_thumbnails' . $directory);
 		// Generate an aray with thumnail preview links.
 		$imageList = $this->folderImageList(CMS_ROOT . $directory);
-		// trigger_error('view_thumbnails 2');
 		foreach($imageList as $val) {
 			$links['currentThumbnails'][] = $directory . $settings['thumbnailFolder'] .'/' . $val;
-			// trigger_error( URL_PUBLIC . $directory. '/' . $val);
 			$links['name'][]=$val;
 		}
 		
@@ -325,21 +293,14 @@ class ImmanagerController extends PluginController {
 		// trigger_error('tS:thumbnailFolder:' . $globalSettings['thumbnailFolder']);
 		
 		// Directory to create if does not exist
-		$thumbnailDirectory = CMS_ROOT
-			.$settings['ImageFolder']
-			.$globalSettings['thumbnailFolder'];
-		trigger_error("tS:current directory:" . __FILE__);
-		trigger_error("tS:thumbnailDirrectory:" . $thumbnailDirectory);
-		
+		$thumbnailDirectory = $settings['ImageFolder'] . $globalSettings['thumbnailFolder'];
 		
 		// Check if directory exist, if not create it.
-		if (!is_dir($thumbnailDirectory)){
-			if(!mkdir($thumbnailDirectory, 0777)){
+		if (!is_dir(CMS_ROOT . $thumbnailDirectory)){
+			if(!mkdir(CMS_ROOT . $thumbnailDirectory, 0777)){
 				trigger_error('Unable to make directory.');	
 				Flash::set('error', 'Cannot create directory.');
 				redirect(get_url('plugin/immanager/viewThumbnails' . $settings['ImageFolder']));
-			} else {
-				//trigger_error('Directory created');	
 			}
 		}
 		
@@ -347,25 +308,34 @@ class ImmanagerController extends PluginController {
 		// Get an array with the pictures to be procesed.
 		$imageList = $this->folderImageList(CMS_ROOT . $settings['ImageFolder']);
 		// Cycle throght the array create thumbs and write them to disk.
-		foreach ($imageList as $key => $val){
-			trigger_error($settings['ImageFolder'] . '/' . $val);
-			// $imageList[$key] = $settings['ImageFolder'] . '/' . $val;
-			// trigger_error($imageList[$key]);
-			trigger_error($settings['backgroundColor']);
-			$im = $this->makeThumbnail(CMS_ROOT . $settings['ImageFolder'] . '/' . $val, 
+		foreach ($imageList as $val){
+			$thumbnailPath = $thumbnailDirectory . DS . $val;
+			$im = $this->makeThumbnail(CMS_ROOT . $settings['ImageFolder'] . DS . $val, 
 							$settings['resizeMethod'],
 							$settings['thumbnailWidth'],
 							$settings['thumbnailHeight'],
 							$backgroundColor);
 			
 			// Ok so now write the thumbnails to disk.
-			if (!imagejpeg( $im , $thumbnailDirectory . '/' . $val )){
-				Flash::set('error', 'Cannot write image file.');
+			if (!imagejpeg( $im , CMS_ROOT . $thumbnailPath )){
+				Flash::set('error', __('Cannot write image file.'));
 			}
 			
 			imagedestroy($im);
+			
+			// Last, look for immanagers and and add the the thumbnail path if 
+			// is isnt set.
+			$manager = immanager::findByPath($settings['ImageFolder'] . DS . $val);
+			// If the manager exists update thumbnailPath if it needs to be.
+			if($manager){
+				trigger_error('manager found.');
+				if($manager->thumbnailPath != $thumbnailPath) {
+					$manager->thumbnailPath = $thumbnailPath;
+					$manager->save();
+				}
+			}
 		}
-		
+		Flash::set('success', __('Thumbnails successfully saved.'));
 		redirect(get_url('plugin/immanager/viewThumbnails' . $settings['ImageFolder']));
   }
 	
@@ -444,7 +414,6 @@ class ImmanagerController extends PluginController {
 			// if there is enter it to the row.
 			$thumbnailPath = $image->imagePath . DS . $settings['thumbnailFolder'] . DS . $image->imageFilename;
 			if(file_exists(CMS_ROOT . $thumbnailPath )) {
-				trigger_error('hi');
 				$image->thumbnailPath = $thumbnailPath;
 			}
 			
@@ -456,8 +425,6 @@ class ImmanagerController extends PluginController {
 			$return['msg'] = 'success' . $returnMsg;
     	echo json_encode($return);
     } else {
-
-			$imageFolder = str_replace( '/' . end(explode('/', $imagePath)), '', $imagePath);	
 			Flash::set('success', __('Image title and description updated.'));
 			redirect(get_url('plugin/immanager/browse' . $imagePath ));
     }

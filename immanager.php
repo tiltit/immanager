@@ -66,7 +66,7 @@ class immanager extends Record {
 										$tablename.imageTitle as imageTitle, 
 										$tablename.imageDescription as imageDescription ,
 										$tablename.thumbnailPath as thumbnailPath
-			FROM $tablename $where_string";
+			FROM $tablename $where_string $order_by_string $limit_string $offset_string";
 		
 		$stmt = self::$__CONN__->prepare($sql);
 		$stmt->execute();
@@ -86,9 +86,10 @@ class immanager extends Record {
 	} // find
 		
 
-	public static function findAllByFolder($folder) {
+	public static function findAllByFolder($folder, $order = 'imageFilename') {
 		return self::find(array(
-			'where' => self::tableNameFromClassName('immanager') . '.imagePath = "' . $folder . '"'
+			'where' => self::tableNameFromClassName('immanager') . '.imagePath = "' . $folder . '"',
+			'order' => $order
 		));
 	}
 	

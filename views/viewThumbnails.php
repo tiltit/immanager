@@ -1,4 +1,14 @@
 <?php
+/*
+ *			immanager plugin for WolfCMS.
+ *
+ *			This plugin makes it posible to give titles and descriptions to
+ *			images in the backend of a WolfCMS powered website.
+ *
+ *			Author : Oliver Dille
+ *			Licence : GPL3
+ *
+ */
 
 /* Security measure */
 if (!defined('IN_CMS')) { exit(); }
