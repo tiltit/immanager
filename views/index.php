@@ -13,8 +13,7 @@
 
 echo '<h1>' . $directory . '</h1>';
 if(is_array($images)){
-	foreach ($images as $key => $image) {
-?>
+	foreach ($images as $key => $image) {?>
 	<form method="post" action="<?php echo get_url('plugin/immanager/imageCommeterSaveComment'); ?>" 
 		name="<?php echo $directory . '/' . $image ;?>" class="immanagerForm">
 		<fieldset style="padding: 0.5em;">
@@ -32,11 +31,11 @@ if(is_array($images)){
 				</tr>
 				<tr>
 				<td class="label">
-					<label for="imageDescription :">
+					<label for="imageDescription">
 						Image Comment:
 					</label>
 					<img style="padding-top:1em;" 
-						src="<?php echo get_url('plugin/immanager/thumbnail?path=') . $directory . DS . $image ?>&rm=6&w=120&h=120&backgroundColor=FFF"/>
+						src="<?php echo get_url('plugin/immanager/thumbnail?path=') . $directory . DS . $image ?>&rm=2&w=120&h=120&backgroundColor=FFF"/>
 				</td>
 					<td class="field">
 						<textarea name="imageDescription" rows="10" cols="40" style="width: 100%;"><?php if(isset($immanagers[$image])) echo $immanagers[$image]->imageDescription;?></textarea> 
@@ -44,7 +43,7 @@ if(is_array($images)){
 				</tr>
 				<tr>
 					<td class="label">
-						<label for="saveDescription :">Save Description:</label>
+						<label for="saveDescription">Save Description:</label>
 					</td>	
 					<td>
 						<input style= "float : right;" 
@@ -58,7 +57,7 @@ if(is_array($images)){
 				<?php 
 				// Hiden input to set the image path.
 				?> 
-				<input type="hidden" name="imagePath" value="<?php echo $directory;?>" />
+				<input type="hidden" name="imagePath" value="<?php echo $directory ;?>" />
 				<input type="hidden" name="imageFilename" value="<?php echo $image ;?>" />
 		</fieldset>
 	</form>		
@@ -77,8 +76,11 @@ $(document).ready(function(){
 		e.preventDefault();
 		var link = $(this).attr("name");
 		var formData = $(this).serializeArray();
+		$('body').prepend(window.location.pathname);
 		var pageurl = window.location.pathname;
-		var ajaxurl= pageurl + '/imageCommeterSaveComment';
+		
+		var ajaxurl='<?php echo get_url('plugin/immanager/imageCommeterSaveComment');?>';
+		
 		$.ajax({
 			type : 'POST',
 			url : ajaxurl,

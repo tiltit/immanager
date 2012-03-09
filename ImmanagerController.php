@@ -2,7 +2,7 @@
 // php debuging
 //ini_set('display_errors', 0);
 //ini_set('log_errors', 1);
-//ini_set('error_log', '/var/www/www.tiltit.org/php_errors.txt');
+//ini_set('error_log', '/var/www/cheval-cameramiste.tiltit.org/php_errors.txt');
 //error_reporting(E_USER_NOTICE);
 //error_reporting(E_ERROR | E_USER_NOTICE);
 //error_reporting(E_ALL);
@@ -342,7 +342,7 @@ class ImmanagerController extends PluginController {
 	// Using a similar method to the filemanager plugin.
 	public function browse() {
     // Add javascript for the plugins index page.
-		Plugin::addJavascript('immanager', 'scripts/immanager.js');
+		Plugin::addJavascript('immanager', 'js/flash.js');
     // retrieve the plugin settings
 		$settings = Plugin::getAllSettings('immanager');
 		$params = func_get_args();
@@ -379,7 +379,9 @@ class ImmanagerController extends PluginController {
     	
   }
     
-	public function index() {	
+	public function index() {
+		// Add javascript for the plugins index page.
+		Plugin::addJavascript('immanager', 'js/flash.js');
 		$this->browse();
 	}
 
@@ -394,7 +396,6 @@ class ImmanagerController extends PluginController {
 			'imageDescription' => $_POST['imageDescription'],
 			'imageFilename' => $_POST['imageFilename']
 		);
-    
 		//$images = immanager::findAllByFolder($imagePath);
 		$image = immanager::findByPath($imagePath . '/' . $imageData['imageFilename']);
 		
@@ -422,7 +423,7 @@ class ImmanagerController extends PluginController {
 			
     if ($settings['enableAjax']==1) {
     	$return['error'] = false;
-			$return['msg'] = 'success' . $returnMsg;
+			$return['msg'] = 'success';
     	echo json_encode($return);
     } else {
 			Flash::set('success', __('Image title and description updated.'));
