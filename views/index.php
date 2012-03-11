@@ -15,7 +15,8 @@ echo '<h1>' . $directory . '</h1>';
 if(is_array($images)){
 	foreach ($images as $key => $image) {?>
 	<form method="post" action="<?php echo get_url('plugin/immanager/imageCommeterSaveComment'); ?>" 
-		name="<?php echo $directory . '/' . $image ;?>" class="immanagerForm">
+		name="<?php echo $directory . '/' . $image ;?>" class="immanagerForm"
+		style="position:relative;">
 		<fieldset style="padding: 0.5em;">
 			<legend style="padding: 0em 0.5em 0em 0.5em; font-weight: bold;">
 				<?php echo $directory . DS . $image ;?>
@@ -76,11 +77,10 @@ $(document).ready(function(){
 		e.preventDefault();
 		var link = $(this).attr("name");
 		var formData = $(this).serializeArray();
-		$('body').prepend(window.location.pathname);
 		var pageurl = window.location.pathname;
 		
 		var ajaxurl='<?php echo get_url('plugin/immanager/imageCommeterSaveComment');?>';
-		
+		var form = $(this);
 		$.ajax({
 			type : 'POST',
 			url : ajaxurl,
@@ -93,11 +93,11 @@ $(document).ready(function(){
 			},
 			success : function(data){
 				
-				flash('success',"<?php echo __('Image title and description updated'); ?>");
+				flash('success',"<?php echo __('The image title and description has been saved'); ?>",form);
 				
 			},
 			error : function(XMLHttpRequest, textStatus, errorThrown) {
-				flash('error',"<?php echo __('Sorry there has been an error'); ?>");
+				flash('error',"<?php echo __('Sorry there has been an error'); ?>", form);
 			}
 			
 		});

@@ -1,6 +1,5 @@
 // Mimic Flash::set() messages
-// optional $object to focus
-function flash(type,message,target) {
+function flash(type,message,form) {
     switch(type) {
         case 'success': case 'info': case 'error':
         break;
@@ -9,7 +8,7 @@ function flash(type,message,target) {
         break;
     }
     $flashBox = $('<div id="'+type+'" class="message" style="display: none">'+message+'</div>');
-    $flashBox.appendTo('#header')
+    $flashBox.prependTo(form)
         .fadeIn('slow')
         .animate({opacity: 1.0}, 1500)
         .fadeOut('slow', function() {
