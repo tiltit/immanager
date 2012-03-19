@@ -50,7 +50,7 @@ echo '<h1>' . $directory . '</h1>';
 					<td class="field">
 						<input type="text" class="textinput" value="<?php echo $thumbnailHeight; ?>" name="settings[thumbnailHeight]" />
 					</td>
-					<td class="help"></td>
+					<td class="help"><?php echo __('Height in pixels of the thumbnails.')?></td>
 				</tr>
 				<tr>
 					<td class="label"> 
@@ -59,7 +59,7 @@ echo '<h1>' . $directory . '</h1>';
 					<td class="field">
 						<input type="text" class="textinput" value="<?php echo $backgroundColor; ?>" name="settings[backgroundColor]" />
 					</td>
-					<td class="help"></td>
+					<td class="help"><?php echo __('Choose the background color for the frame resize metho. Must be in hexadecimal notation.')?></td>
 				</tr>
 				
 				
@@ -77,7 +77,8 @@ echo '<h1>' . $directory . '</h1>';
 <?php
 	if (is_array($links['currentThumbnails'])){
 		foreach( $links['currentThumbnails'] as $key => $link) {
-			echo '<img style="padding-right: 0.5em; padding-bottom: 0.5em;" src="' . $link . '" title="' . $links['name'][$key] . '" />';
+			if (file_exists(CMS_ROOT . $link))
+				echo '<img style="padding-right: 0.5em; padding-bottom: 0.5em;" src="' . $link . '" title="' . $links['name'][$key] . '" />';
 		} 
 	} else {
 		echo __('There are no thumbnails for images in this folder.');
@@ -118,7 +119,6 @@ echo '<h1>' . $directory . '</h1>';
 			var inputs = [];
 			$('#thumbnailForm').find(':text').each(function(index){
 				inputs[index]=$(this).val();
-				html = html + $(this).val() + '<br />';
 			});
 			var thumbnailWidth = inputs[0];
 			var thumbnailHeight = inputs[1];
