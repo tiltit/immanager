@@ -15,15 +15,14 @@ echo '<h1>' . $directory . '</h1>';
 if(is_array($images)){
 	foreach ($images as $key => $image) {?>
 	<form method="post" action="<?php echo get_url('plugin/immanager/imageCommeterSaveComment'); ?>" 
-		name="<?php echo $directory . '/' . $image ;?>" class="immanagerForm"
-		style="position:relative;">
+		name="<?php echo $directory . '/' . $image ;?>" class="immanagerForm">
 		<fieldset style="padding: 0.5em;">
 			<legend style="padding: 0em 0.5em 0em 0.5em; font-weight: bold;">
 				<?php echo $directory . DS . $image ;?>
 			</legend>
-			<table class="fieldset" cellpadding="0" cellspacing="0" border="0">
+			<table class="immanager" cellpadding="0" cellspacing="0" border="0">
 				<tr>
-					<td  class="label" style="border-top: 0;"><label for="imageTitle">Image title:</label></td>
+					<td  class="label" style="border-top: 0;"><label for="imageTitle"><?php echo __('Image title:'); ?></label></td>
 					<td class="field" style="border-top: 0;">
 						<input type="text" class="textinput" 
 							value="<?php if(isset($immanagers[$image])) echo $immanagers[$image]->imageTitle;?>"
@@ -31,9 +30,9 @@ if(is_array($images)){
 					</td>
 				</tr>
 				<tr>
-				<td class="label">
+				<td class="label"  rowspan="2">
 					<label for="imageDescription">
-						Image Comment:
+						<?php echo __('Image Comment:');?>
 					</label>
 					<img style="padding-top:1em;" 
 						src="<?php echo get_url('plugin/immanager/thumbnail?path=') . $directory . DS . $image ?>&rm=2&w=120&h=120&backgroundColor=FFF"/>
@@ -43,15 +42,15 @@ if(is_array($images)){
 					</td>
 				</tr>
 				<tr>
-					<td class="label">
-						<label for="saveDescription">Save Description:</label>
-					</td>	
+				<!-- 	<td class="label">
+						<label for="saveDescription"><?php echo __('Save title and description'); ?></label>
+					</td>	 -->
 					<td>
 						<input style= "float : right;" 
 							class="immanagerSaveComment" 
 							name="<?php echo $directory . DS . $image ;?>" 
 							type="submit" 
-							value="<?php echo __('Save image name and description');?>" />
+							value="<?php echo __('Save');?>" />
 					</td>
 				</tr>
 			</table>
@@ -93,11 +92,11 @@ $(document).ready(function(){
 			},
 			success : function(data){
 				
-				flash('success',"<?php echo __('The image title and description has been saved'); ?>",form);
+				flash('success',"<?php echo __('The image title and description has been saved'); ?>",form,form);
 				
 			},
 			error : function(XMLHttpRequest, textStatus, errorThrown) {
-				flash('error',"<?php echo __('Sorry there has been an error'); ?>", form);
+				flash('error',"<?php echo __('Sorry there has been an error'); ?>", form, form);
 			}
 			
 		});

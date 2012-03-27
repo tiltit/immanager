@@ -49,11 +49,11 @@ You can then retrieve the entered information in a page in the following way:
 <p>Or if you want to cycle through an entire folder:</p>
 <strong><pre>&lt?php
 foreach (immanager::findAllByFolder(&#39/public/images/MyImageFolder&#39) as $picture) {
-  echo &#39&ltstrong&gt&#39 . $picture-&gtimageTitle . &#39&lt/strong&gt&#39 . &#39&ltbr /&gt&#39;
-  echo &#39&lta href="&#39 . $picture-&gtimagePath . DS . $picture-&gtimageFilename . &#39"&gt&#39;
-  echo &#39&ltimg src="&#39 . $picture-&gtthumbnailPath . &#39" /&gt&#39;
-  echo &#39&lt/a&gt&#39;
-  echo $picture-&gtimageDescription . &#39&ltbr /&gt&#39;
+  echo &#39&ltstrong&gt&#39 . $picture-&gtimageTitle . &#39&lt/strong&gt&#39 . &#39&ltbr /&gt&#39;;
+  echo &#39&lta href="&#39 . $picture-&gtimagePath . DS . $picture-&gtimageFilename . &#39"&gt&#39;;
+  echo &#39&ltimg src="&#39 . $picture-&gtthumbnailPath . &#39" /&gt&#39;;
+  echo &#39&lt/a&gt&#39;;
+  echo $picture-&gtimageDescription . &#39&ltbr /&gt&#39;;
 }
 ?&gt</pre></strong>
 '); ?>

@@ -17,7 +17,7 @@ if (!defined('IN_CMS')) { exit(); }
 <h1><?php echo __('Immager Settings'); ?></h1>
 <form action="<?php echo get_url('plugin/immanager/saveSettings'); ?>" method="post">
 	<fieldset style="padding: 0.5em;">
-		<legend style="padding: 0em 0.5em 0em 0.5em; font-weight: bold;"><?php echo __('Settings for immager plugin.'); ?></legend>
+		<legend style="padding: 0em 0.5em 0em 0.5em; font-weight: bold;"><?php echo __('Genaral settings for immager plugin.'); ?></legend>
 			<table class="fieldset" cellpadding="0" cellspacing="0" border="0">
 				<tr>
 					<td class="label"><label for="settings[imageFolder]"><?php echo __('Set the image folder'); ?>: </label></td>
@@ -28,7 +28,7 @@ if (!defined('IN_CMS')) { exit(); }
 				</tr>
 				
 				<tr>
-					<td class="label"><label for="settings[enableAjax]"><?php echo __('Enable Ajax'); ?>: </label></td>
+					<td class="label"><label for="settings[enableAjax]"><?php echo __('Use Ajax'); ?>: </label></td>
 					<td class="field">
 						<select name="settings[enableAjax]">
 						<option value="0" <?php if($enableAjax == "0") echo 'selected ="";' ?>><?php echo __('No'); ?></option>
@@ -48,7 +48,7 @@ if (!defined('IN_CMS')) { exit(); }
 					<td class="field">			
 						<input type="text" class="textinput" value="<?php echo $thumbnailFolder; ?>" name="settings[thumbnailFolder]" />
 					</td>
-					<td class="help"><?php echo __('Choose the folder relative to tour image folder in which you want to store your thumbnails.'); ?></td>
+					<td class="help"><?php echo __('Choose the name for the thumbnails subfolders.'); ?></td>
 				</tr>
 				<tr>
 					<td class="label"><label for="settings[resizeMethod]"><?php echo __('Set choose the resize method.'); ?>: </label></td>	

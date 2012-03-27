@@ -20,6 +20,22 @@
 
 class ImmanagerController extends PluginController {
 	
+	/*
+	 * Function cleanupFolder
+	 * Quik clean up function to remove deleted files from the record.
+	 * 
+	 * @todo Also search for deleted sub folders.
+	 * 
+	 */
+	private function cleanupFolder($folder) {
+		$images = immanager::findAllByFolder($folder);
+		foreach ($images as $image) {
+			$filename = CMS_ROOT . $image->imagePath . DS . $image->imageFilename;
+			if( ! is_file($filename)) 
+				$image->delete();
+		}
+	}
+	
 	private function is_image ($ext) {
 		$types = array('png','jpg','jpeg','gif');		
 		foreach ($types as $val) if (strtolower ($val) == $ext) return true; 
@@ -203,6 +219,38 @@ class ImmanagerController extends PluginController {
 		return false;
 	}
 	
+	/*
+	 * function xml_getImagesInFolder
+	 * 
+	 * Returns an xml formated list of images in a folder.
+	 * Not used for the plugin itself but here
+	 * for convenience.
+	 * 
+	 * 
+	 */
+	public function xml_getImagesInFolder(){
+		$folder = $_GET['folder'];
+		header('Content-Type:text/xml');
+		/*
+		echo "<?xml vertion='1.0' ?>\n"; 
+		*/
+		echo "<images>\n";
+		$images=immanager::findAllByFolder($folder);
+		$i=0;
+		foreach($images as $image) {
+			echo "<image id='$i'>\n";
+				echo "<ititle>$image->imageTitle</ititle>\n";
+				echo "<description>$image->imageDescription</description>\n";
+				echo "<path>$image->imagePath</path>\n";
+				echo "<filename>$image->imageFilename</filename>\n";
+				echo "<thumbnailPath>$image->thumbnailPath</thumbnailPath>\n";
+			echo "</image>\n";
+			$i++;
+		}
+		echo "<nbrOfImages>$i</nbrOfImages>\n";
+		echo "</images>\n";
+	}
+	
 	public function __construct() {
 		$this->setLayout('backend');
 		$this->assignToLayout('sidebar', new View('../../plugins/immanager/views/sidebar'));
@@ -259,6 +307,9 @@ class ImmanagerController extends PluginController {
     $directory = ($directory == '/') ? $settings['ImageFolder'] : $directory;
 		// Generate an aray with thumnail preview links.
 		$imageList = $this->folderImageList(CMS_ROOT . $directory);
+		/*
+		 * @TODO Use record to retreive thumbnails.
+		 */
 		foreach($imageList as $val) {
 			$links['currentThumbnails'][] = $directory . $settings['thumbnailFolder'] .'/' . $val;
 			$links['name'][]=$val;
@@ -308,9 +359,9 @@ class ImmanagerController extends PluginController {
 		// Get an array with the pictures to be procesed.
 		$imageList = $this->folderImageList(CMS_ROOT . $settings['ImageFolder']);
 		// Cycle throght the array create thumbs and write them to disk.
-		foreach ($imageList as $val){
-			$thumbnailPath = $thumbnailDirectory . DS . $val;
-			$im = $this->makeThumbnail(CMS_ROOT . $settings['ImageFolder'] . DS . $val, 
+		foreach ($imageList as $fileName){
+			$thumbnailPath = $thumbnailDirectory . DS . $fileName;
+			$im = $this->makeThumbnail(CMS_ROOT . $settings['ImageFolder'] . DS . $fileName, 
 							$settings['resizeMethod'],
 							$settings['thumbnailWidth'],
 							$settings['thumbnailHeight'],
@@ -325,14 +376,23 @@ class ImmanagerController extends PluginController {
 			
 			// Last, look for immanagers and and add the the thumbnail path if 
 			// is isnt set.
-			$manager = immanager::findByPath($settings['ImageFolder'] . DS . $val);
+			$image = immanager::findByPath($settings['ImageFolder'] . DS . $fileName);
 			// If the manager exists update thumbnailPath if it needs to be.
-			if($manager){
+			if($image){
 				trigger_error('manager found.');
-				if($manager->thumbnailPath != $thumbnailPath) {
-					$manager->thumbnailPath = $thumbnailPath;
-					$manager->save();
+				if($image->thumbnailPath != $thumbnailPath) {
+					$image->thumbnailPath = $thumbnailPath;
+					$image->save();
 				}
+			} 
+			else {
+				$image = new immanager();
+				
+				$image->imagePath = $settings['ImageFolder'];
+				$image->imageFilename =$fileName;
+			
+				$image->thumbnailPath = $thumbnailPath;
+				$image->save();
 			}
 		}
 		Flash::set('success', __('Thumbnails successfully saved.'));
@@ -349,6 +409,7 @@ class ImmanagerController extends PluginController {
 		$directory = '/' . join('/', $params);
     $directory = ($directory == '/') ? $settings['ImageFolder'] : $directory;
 
+		$this->cleanupFolder($directory);
 		// Search the directory for image files.
 		$files = $this->folderImageList(CMS_ROOT . $directory);
 		// Check If there are any images in the folder.
@@ -356,6 +417,17 @@ class ImmanagerController extends PluginController {
 			// Create an array of immanagers indexed by the file path. 
 			foreach(immanager::findAllByFolder($directory) as $image){
 				$immanagers[$image->imageFilename] = $image;
+			}
+			
+			// Add all pictures in folder to the Immanager record.
+			foreach($files as $imageFilename){
+				$image = immanager::findByPath($directory . DS .$imageFilename);
+				if($image == NULL){
+					$image = new immanager();
+					$image->imagePath = $directory;
+					$image->imageFilename =end(explode('/',$imageFilename));
+					$image->save();
+				}
 			}
 		} 
 		else {
